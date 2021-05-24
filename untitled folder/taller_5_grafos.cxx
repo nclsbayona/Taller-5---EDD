@@ -26,7 +26,7 @@ struct sPoint
   {
     return ((this->X == b.X) && (this->Y == b.Y) && (this->Z == b.Z));
   }
-  string to_string() const
+  std::string to_string() const
   {
     return ("Point (" + std::to_string(this->X) + ", " + std::to_string(this->Y) + ", " + std::to_string(this->Z) + ")");
   }
@@ -106,19 +106,10 @@ int main(int argc, char *argv[])
     return (1);
   }
   // fi
-  map<sPoint, std::pair<sPoint, U>> path = g.dijkstra(puntos[start_id]);
-  map<sPoint, std::pair<sPoint, U>>::iterator dj_iterator = path.begin();
-  cout << path.size() << endl;
-  string impr, impr2;
-  float total_weight = 0;
-  for (; dj_iterator != path.end(); dj_iterator++)
-  {
-    impr = dj_iterator->first.to_string();
-    impr2 = dj_iterator->second.first.to_string();
-    std::cout << impr << ": "
-              << "(" <<impr2<<", " << dj_iterator->second.second << ")"<< endl;
-  }
-
+  pair<U, std::set<sPoint>> dijkstra=g.dijkstra(puntos[start_id], puntos[end_id]);
+   for (std::set<sPoint>::iterator dj_it=dijkstra.second.begin(); dj_it != dijkstra.second.end(); dj_it++){
+     cout<<dj_it->to_string()<<" - ";
+   }
   return (0);
 }
 

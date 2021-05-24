@@ -607,6 +607,8 @@ std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra2(T start)
     typename std::map<T, std::pair<T, U>>::iterator it_pesos_acumulados;
     while (dist.size() != visited.size())
     {
+        std::cout << visited.size();
+        std::cin >> min_weight;
         if (visited.count(start) == 0)
         {
             it_arista = this->vertices_aristas[start].begin();
@@ -621,25 +623,25 @@ std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra2(T start)
                     dist[it_arista->first].second = actual_weight;
                 }
             }
-            visited.insert(start);
             //Chequear el menor
             //Ubicar start en uno no visitado, comparar
             //Primero buscar el menor, que no haya sido visitado
-            min_weight = MIN;
-            min_obj = start;
-            for (it_pesos_acumulados = dist.begin(); it_pesos_acumulados != dist.end(); it_pesos_acumulados++)
+        }
+        visited.insert(start);
+        min_weight = MIN;
+        min_obj = start;
+        for (it_pesos_acumulados = dist.begin(); it_pesos_acumulados != dist.end(); it_pesos_acumulados++)
+        {
+            if (visited.count(it_pesos_acumulados->first) == 0)
             {
-                if (visited.count(it_pesos_acumulados->first) == 0)
+                if (it_pesos_acumulados->second.second < min_weight || min_obj == start)
                 {
-                    if (it_pesos_acumulados->second.second < min_weight || min_obj == start)
-                    {
-                        min_obj = it_pesos_acumulados->first;
-                        min_weight = it_pesos_acumulados->second.second;
-                    }
+                    min_obj = it_pesos_acumulados->first;
+                    min_weight = it_pesos_acumulados->second.second;
                 }
             }
-            start = min_obj;
         }
+        start = min_obj;
     }
     return dist;
 }

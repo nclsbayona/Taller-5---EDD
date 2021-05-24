@@ -8,7 +8,29 @@
 
 using namespace std;
 // -------------------------------------------------------------------------
-
+struct sPoint
+{
+  float X, Y, Z;
+  float distanceTo(const sPoint &b) const
+  {
+    float x = X - b.X;
+    float y = Y - b.Y;
+    float z = Z - b.Z;
+    return (std::sqrt((x * x) + (y * y) + (z * z)));
+  }
+  bool operator<(const sPoint &b) const
+  {
+    return ((this->X < b.X) || (this->Y < b.Y) || (this->Z < b.Z));
+  }
+  bool operator==(const sPoint &b) const
+  {
+    return ((this->X == b.X) && (this->Y == b.Y) && (this->Z == b.Z));
+  }
+  std::string to_string() const
+  {
+    return ("Point (" + std::to_string(this->X) + ", " + std::to_string(this->Y) + ", " + std::to_string(this->Z) + ")");
+  }
+};
 
 // -------------------------------------------------------------------------
 typedef double U;
@@ -88,6 +110,7 @@ int main(int argc, char *argv[])
    for (std::set<sPoint>::iterator dj_it=dijkstra.second.begin(); dj_it != dijkstra.second.end(); dj_it++){
      cout<<dj_it->to_string()<<" - ";
    }
+   cout<<" peso total: "<<dijkstra.first<<endl;
   return (0);
 }
 

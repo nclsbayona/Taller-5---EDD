@@ -9,6 +9,7 @@
 #include <stack>
 #include <utility>
 #include <algorithm>
+
 template <class T, class U=int>
 class Graph{
     private:
@@ -45,7 +46,8 @@ class Graph{
         //Recorridos
         std::vector<T> prim(T start);
         std::vector<T> kruskal();
-        std::map<T, std::pair<T, U>> dijkstra(T start);
+        std::map<T, std::pair<T, U>> dijkstra2(T start);
+        std::pair<U, std::set<T>> dijkstra(T start, T end);
         //Falta KRUSKAL; EULER; PREGUNTAR BIPARTITO
 };
 #include "Graph.hxx"
