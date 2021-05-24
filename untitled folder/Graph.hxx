@@ -622,9 +622,7 @@ std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra(T start)
                 for (auto arista:this->vertices_aristas[start][it_arista->first])
                     std::cout<<arista<<" ";
                 std::cout<<'\n';
-                actual_weight = *(this->vertices_aristas[start][it_arista->first].begin())+ dist[start].second;
-                if (actual_weight==0)
-                    actual_weight=start.distanceTo(it_arista->first)+dist[start].second;
+                actual_weight = start.distanceTo(it_arista->first)+ dist[start].second;
                 if (dist[it_arista->first].second > actual_weight )
                 {
                     std::cout<<"Peso menor hasta "<<it_arista->first.to_string()<<actual_weight<<'\n';
