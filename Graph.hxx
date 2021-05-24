@@ -582,14 +582,14 @@ std::vector<T> Graph<T, U>::kruskal()
 }
 
 template <class T, class U>
-std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra(T start)
+std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra2(T start)
 {
     std::map<T, std::pair<T, U>> dist;
     std::set<T> visited;
     std::pair<T, U> *pair;
     U actual_weight;
     //INFINITY -- FAHRENHEIT 451 <3
-    const int MIN=451;
+    const int MIN = 451;
     typename std::map<T, std::set<U>>::iterator it_arista;
     for (typename std::map<T, std::map<T, std::set<U>>>::iterator it_vertices = this->vertices_aristas.begin(); it_vertices != this->vertices_aristas.end(); ++it_vertices)
     {
@@ -607,27 +607,16 @@ std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra(T start)
     typename std::map<T, std::pair<T, U>>::iterator it_pesos_acumulados;
     while (dist.size() != visited.size())
     {
-        std::cout<<"Imprimiendo el dist\n";
-        for (it_pesos_acumulados = dist.begin(); it_pesos_acumulados != dist.end(); it_pesos_acumulados++)
-            {
-                std::cout<<it_pesos_acumulados->first.to_string()<<": ";
-                std::cout<<"("<<it_pesos_acumulados->second.first.to_string()<<", "<<it_pesos_acumulados->second.second<<")\n";
-            }
         if (visited.count(start) == 0)
         {
             it_arista = this->vertices_aristas[start].begin();
             for (; it_arista != this->vertices_aristas[start].end(); ++it_arista)
             {
-                std::cout<<"Aristas entre "<<start.to_string()<<" y "<<it_arista->first.to_string()<<" ";
-                for (auto arista:this->vertices_aristas[start][it_arista->first])
-                    std::cout<<arista<<" ";
-                std::cout<<'\n';
-                actual_weight = *(this->vertices_aristas[start][it_arista->first].begin())+ dist[start].second;
-                if (actual_weight==0)
-                    actual_weight=start.distanceTo(it_arista->first)+dist[start].second;
-                if (dist[it_arista->first].second > actual_weight )
+                actual_weight = *(this->vertices_aristas[start][it_arista->first].begin()) + dist[start].second;
+                if (actual_weight == 0)
+                    actual_weight = start.distanceTo(it_arista->first) + dist[start].second;
+                if (dist[it_arista->first].second > actual_weight)
                 {
-                    std::cout<<"Peso menor hasta "<<it_arista->first.to_string()<<actual_weight<<'\n';
                     dist[it_arista->first].first = start;
                     dist[it_arista->first].second = actual_weight;
                 }
@@ -653,4 +642,26 @@ std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra(T start)
         }
     }
     return dist;
+}
+
+template <class T, class U>
+std::pair<U, std::set<T>> Graph<T, U>::dijkstra(T start, T end)
+{
+    typename std::map<T, std::pair<T, U>> dist = this->dijkstra2(start);
+    typename std::pair<U, std::set<T>> route;
+    T new_end;
+    if (dist[end].second != 451)
+    {
+        route.first = dist[end].second;
+        route.second.insert(start);
+        new_end = dist[end].first;
+        while (!(route.second.count(dist[end].first)))
+        {
+            while (!(route.second.count(dist[new_end].first)))
+                new_end = dist[new_end].first;
+            route.second.insert(new_end);
+        }
+        route.second.insert(end);
+    }
+    return route;
 }
