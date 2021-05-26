@@ -1,5 +1,5 @@
-#ifndef Graph_H
-#define Graph_H
+#ifndef Graph2_H
+#define Graph2_H
 #include <map>
 #include <set>
 #include <unordered_set>
@@ -50,5 +50,5 @@ class Graph{
         std::pair<U, std::set<T>> dijkstra(T start, T end);
         //Falta KRUSKAL; EULER; PREGUNTAR BIPARTITO
 };
-#include "Graph.hxx"
+#include "Graph_2.hxx"
 #endif

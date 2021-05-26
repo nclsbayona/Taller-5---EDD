@@ -4,18 +4,18 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "Graph.h"
+#include "Graph2.h"
 
 using namespace std;
 // -------------------------------------------------------------------------
 struct sPoint
 {
-  float X, Y, Z;
-  float distanceTo(const sPoint &b) const
+  double X, Y, Z;
+  double distanceTo(const sPoint &b) const
   {
-    float x = X - b.X;
-    float y = Y - b.Y;
-    float z = Z - b.Z;
+    double x = X - b.X;
+    double y = Y - b.Y;
+    double z = Z - b.Z;
     return (std::sqrt((x * x) + (y * y) + (z * z)));
   }
   bool operator<(const sPoint &b) const
@@ -23,6 +23,10 @@ struct sPoint
     return ((this->X < b.X) || (this->Y < b.Y) || (this->Z < b.Z));
   }
   bool operator==(const sPoint &b) const
+  {
+    return ((this->X == b.X) && (this->Y == b.Y) && (this->Z == b.Z));
+  }
+  bool operator!=(const sPoint &b) const
   {
     return ((this->X == b.X) && (this->Y == b.Y) && (this->Z == b.Z));
   }
@@ -110,6 +114,7 @@ int main(int argc, char *argv[])
    for (std::set<sPoint>::iterator dj_it=dijkstra.second.begin(); dj_it != dijkstra.second.end(); dj_it++){
      cout<<dj_it->to_string()<<" - ";
    }
+   cout<<" peso total: "<<dijkstra.first<<endl;
   return (0);
 }
 

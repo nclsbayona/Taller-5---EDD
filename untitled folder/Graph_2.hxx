@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include "Graph2.h"
 #include <iostream>
 template <class T, class U>
 Graph<T, U>::Graph(bool dirigido)
@@ -577,6 +577,7 @@ std::vector<T> Graph<T, U>::kruskal()
     arista_sola = &(*aristas.begin());
     while (!aristas.empty())
     {
+        aristas.pop();
     }
     return *kruskal;
 }
@@ -586,72 +587,69 @@ std::map<T, std::pair<T, U>> Graph<T, U>::dijkstra2(T start)
 {
     std::map<T, std::pair<T, U>> dist;
     std::set<T> visited;
-    std::pair<T, U> *pair;
+    std::pair<T, U> pair;
     U actual_weight;
-    //INFINITY -- FAHRENHEIT 451 <3
-    const int MIN = 451, MAX = 20;
-    int cnt = -1;
+    const int MIN = 999999, MAX = 20;
     typename std::map<T, std::set<U>>::iterator it_arista;
     for (typename std::map<T, std::map<T, std::set<U>>>::iterator it_vertices = this->vertices_aristas.begin(); it_vertices != this->vertices_aristas.end(); ++it_vertices)
     {
-        pair = new std::pair<T, U>;
-        pair->first = it_vertices->first;
-        pair->second = MIN;
-        dist[it_vertices->first] = (*(pair));
-    }
-    pair = new std::pair<T, U>;
-    pair->first = start;
-    pair->second = 0;
-    dist[start] = (*(pair));
-    U min_weight;
-    T min_obj;
-    typename std::map<T, std::pair<T, U>>::iterator it_pesos_acumulados;
-    while (dist.size() != visited.size() && (cnt < MAX))
-    {
-        cnt++;
-        std::cout << "My start is: " << start.to_string();
-        std::cin >> actual_weight;
-        if (visited.count(start) == 0)
+        pair.first = it_vertices->first;
+        pair.second = MIN;
+        if (it_vertices->first == start)
         {
-            cnt = -1;
+            pair.first=start;
+            std::cout << "Here " << it_vertices->first.to_string()<<" y "<<start.to_string()<<'\n';
+            pair.second = 0;
+            dist[start]=(pair);
+            std::cout<<"Acabo de insertar "<<start.to_string()<<'\n';
+        }
+        else
+            dist[it_vertices->first] = (pair);
+        std::cout<<"Esta "<<start.to_string()<<": "<<(dist.find(start)!=dist.end())<<std::endl;
+    }
+    std::cout<<"Esta "<<start.to_string()<<": "<<(dist.find(start)!=dist.end())<<std::endl;
+    for (auto linea : dist)
+        std::cout << linea.first.to_string() << "( " << linea.second.first.to_string() << ", " << linea.second.second << " )" << '\n';
+
+    std::cin >> actual_weight;
+    U min_weight;
+    T min_obj, fstart = start;
+    
+    typename std::map<T, std::pair<T, U>>::iterator it_pesos_acumulados;
+    while (dist.size() != visited.size() && !(min_obj == fstart) && dist.find(start)!=dist.end())
+    {
+        if (dist.find(start) != dist.end())
+        {
+            visited.insert(start);
             it_arista = this->vertices_aristas[start].begin();
             for (; it_arista != this->vertices_aristas[start].end(); ++it_arista)
             {
-                actual_weight = *(this->vertices_aristas[start][it_arista->first].begin()) + dist[start].second;
+                actual_weight = dist[start].second + *(this->vertices_aristas[start][it_arista->first].begin());
                 if (actual_weight == 0)
-                    actual_weight = start.distanceTo(it_arista->first) + dist[start].second;
-                std::cout << ". Peso actual -> " << dist[it_arista->first].second;
-                std::cout << "\n\nArista desde " << start.to_string() << " hasta " << it_arista->first.to_string() << " peso minimo " << actual_weight;
-                std::cout << ". Peso actual -> " << dist[it_arista->first].second;
-                std::cout << "\n\nAquí estoy imprimiendo el mapa de distancias\n";
-                if (dist[it_arista->first].second > actual_weight)
+                    actual_weight = dist[start].second + start.distanceTo(it_arista->first);
+                if (actual_weight < dist[it_arista->first].second)
                 {
                     dist[it_arista->first].first = start;
                     dist[it_arista->first].second = actual_weight;
-                    std::cout << "Estoy actualizando las distancias del punto " << it_arista->first.to_string() << " nuevo punto de inicio " << start.to_string() << " con peso " << actual_weight << std::endl;
-                }
-                for (auto linea : dist)
-                    std::cout << "Linea " << linea.first.to_string() << " " << linea.second.first.to_string() << ", " << linea.second.second << '\n';
-                        }
-            //Chequear el menor
-            //Ubicar start en uno no visitado, comparar
-            //Primero buscar el menor, que no haya sido visitado
-            visited.insert(start);
-            min_weight = MIN;
-            min_obj = start;
-            for (it_pesos_acumulados = dist.begin(); it_pesos_acumulados != dist.end(); it_pesos_acumulados++)
-            {
-                if (visited.count(it_pesos_acumulados->first) == 0)
-                {
-                    if (it_pesos_acumulados->second.second < min_weight || min_obj == start)
-                    {
-                        min_obj = it_pesos_acumulados->first;
-                        min_weight = it_pesos_acumulados->second.second;
-                    }
                 }
             }
-            start = min_obj;
         }
+        fstart = start;
+        min_weight = MIN;
+        min_obj = start;
+        for (it_pesos_acumulados = dist.begin(); it_pesos_acumulados != dist.end(); it_pesos_acumulados++)
+        {
+            actual_weight = it_pesos_acumulados->second.second;
+            if (visited.count(it_pesos_acumulados->first) == 0)
+            {
+                if (actual_weight < min_weight)
+                {
+                    min_obj = (*it_pesos_acumulados).first;
+                    min_weight = actual_weight;
+                }
+            }
+        }
+        start = min_obj;
     }
     return dist;
 }
@@ -662,7 +660,7 @@ std::pair<U, std::set<T>> Graph<T, U>::dijkstra(T start, T end)
     typename std::map<T, std::pair<T, U>> dist = this->dijkstra2(start);
     typename std::pair<U, std::set<T>> route;
     T new_end;
-    if (dist[end].second != 451)
+    if (dist.find(end)!=dist.end()&&dist[end].second != 999999)
     {
         route.first = dist[end].second;
         route.second.insert(start);
